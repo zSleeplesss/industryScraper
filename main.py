@@ -5,6 +5,7 @@ import json
 
 sectors = {}
 industries = {}
+sector_values = {}
 
 def keep_list(line):
     if line[4] not in sectors:
@@ -19,12 +20,24 @@ def keep_list(line):
 def better_list(line):
     if line[4] not in sectors:
         sectors[line[4]] = {}
+        sector_values[line[4]] = {}
     # else:
     #     sectors[line[4]].append(line[5])
+    string = line[2]
+    if ' B' in string:
+        value = string.split(' B')[0]
+        num = float(value.replace('$', ''))
+    elif ' T' in string:
+        value = string.split(' T')[0]
+        num = float(value.replace('$', '')) * 1000
+    value = string[0]
     if line[5] not in sectors[line[4]]:
         sectors[line[4]][line[5]] = 1
+        sector_values[line[4]][line[5]] = num
     else:
         sectors[line[4]][line[5]] = sectors[line[4]][line[5]] + 1
+        sector_values[line[4]][line[5]] = float(sector_values[line[4]][line[5]]) + num
+
 
 
 
@@ -64,5 +77,8 @@ for i in range (1, 34):
 print(sectors)
 print(industries)
 
-json_file = open('sectors.json', 'w')
-json.dump(sectors, json_file, indent=4, separators=(",", ": "))
+sectors_file = open('sectors.json', 'w')
+json.dump(sectors, sectors_file, indent=4, separators=(",", ": "))
+sectors_file.close()
+sector_values_file = open('sector_values.json', 'w')
+json.dump(sector_values, sector_values_file, indent=4, separators=(",", ": "))
