@@ -2,6 +2,7 @@ import requests as re
 from bs4 import BeautifulSoup
 import csv
 import json
+import os
 
 sectors = {}
 industries = {}
@@ -50,6 +51,12 @@ def parse(page_num):
     line = []
     i = 0
     finds = soup.find_all("td")
+
+    # Check if this is the first page being run
+    if page_num == 1:
+        os.remove('companies.csv')
+        print("Original csv file removed")
+        print("New csv file created and writing")
     file = open('companies.csv', 'a', newline='')
     writer = csv.writer(file)
     for find in finds:
